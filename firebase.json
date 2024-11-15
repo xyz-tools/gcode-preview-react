@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "gcode-preview-svelte",
+    "target": "gcode-preview-react",
     "public": "build",
     "ignore": [
       "firebase.json",
