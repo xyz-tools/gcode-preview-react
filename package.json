@@ -9,7 +9,7 @@
   ],
   "main": "src/index.tsx",
   "dependencies": {
-    "gcode-preview": "file:../..",
+    "gcode-preview": "2.18",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-scripts": "5.0.1"
@@ -36,8 +36,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
     "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx,json}'",
-    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
-    "preinstall": "cd ../.. && npm run build"
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "browserslist": [
     ">0.2%",
