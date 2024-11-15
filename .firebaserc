@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "gcode-preview"
+  },
+  "targets": {
+    "gcode-preview": {
+      "hosting": {
+        "gcode-preview-react": [
+          "gcode-preview-react"
+        ]
+      }
+    }
+  }
+}

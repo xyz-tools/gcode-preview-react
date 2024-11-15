@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "target": "gcode-preview-svelte",
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
