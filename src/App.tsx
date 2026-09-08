@@ -4,71 +4,50 @@ import './styles.css';
 
 type GCodePreviewHandle = React.ElementRef<typeof GCodePreview>;
 
-const chunkSize = 250;
+// gcode-preview 3.x reads the stream itself and renders progressively while it
+// parses, so no manual chunking is needed. The stream has to be decoded to text
+// first: the parser splits chunks on '\n' and would silently render nothing if
+// it were handed raw bytes.
+const loadGcode = async (
+  target: React.RefObject<GCodePreviewHandle>,
+  url: string,
+  signal: AbortSignal
+) => {
+  const response = await fetch(url, { signal });
+  if (!response.ok || !response.body) {
+    throw new Error(
+      `status code: ${response.status}, status text: ${response.statusText}`
+    );
+  }
+  // the load may have been superseded while the file was in flight
+  if (signal.aborted) return;
+  await target.current?.load(
+    response.body.pipeThrough(new TextDecoderStream())
+  );
+};
 
 function App(): JSX.Element {
   const gcodePreviewRef1 = useRef<GCodePreviewHandle | null>(null);
   const gcodePreviewRef2 = useRef<GCodePreviewHandle | null>(null);
   // const [layersLoaded, setLayerLoaded] = useState<number>();
 
-  const fetchGcode = async (url: string) => {
-    const response = await fetch(url);
-    if (response.status >= 200 && response.status <= 299) {
-      const file = await response.text();
-      return file.split('\n');
-    } else {
-      const errorMessage = `status code: ${response.status}, status text: ${response.statusText}`;
-      throw new Error(errorMessage);
-    }
-  };
-
-  const loadPreviewChunked = (
-    target: GCodePreviewHandle,
-    lines: string[],
-    delay: number
-  ) => {
-    let c = 0;
-
-    // replace substr with substring because it is not part of the main ECMAScript specification
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
-    const id =
-      '__animationTimer__' + Math.random().toString(36).substring(2, 10);
-    const loadProgressive = () => {
-      const start = c * chunkSize;
-      const end = (c + 1) * chunkSize;
-      const chunk = lines.slice(start, end);
-
-      target.processGCode(chunk);
-      // setLayerLoaded(target.getLayerCount());
-      c++;
-      if (c * chunkSize < lines.length) {
-        window[id] = setTimeout(loadProgressive, delay);
-      }
-    };
-
-    // cancel loading process if one is still in progress
-    // mostly when hot reloading
-    window.clearTimeout(window[id]);
-    loadProgressive();
-  };
-
   useEffect(() => {
-    async function init() {
-      const lines1 = await fetchGcode('/benchy.gcode');
-      loadPreviewChunked(
-        gcodePreviewRef1.current as GCodePreviewHandle,
-        lines1,
-        50
-      );
+    const controller = new AbortController();
 
-      const lines2 = await fetchGcode('/duplo_tracks.gcode');
-      loadPreviewChunked(
-        gcodePreviewRef2.current as GCodePreviewHandle,
-        lines2,
-        50
+    async function init() {
+      await loadGcode(gcodePreviewRef1, '/benchy.gcode', controller.signal);
+      await loadGcode(
+        gcodePreviewRef2,
+        '/duplo_tracks.gcode',
+        controller.signal
       );
     }
-    init();
+
+    init().catch(err => {
+      if ((err as Error).name !== 'AbortError') console.error(err);
+    });
+
+    return () => controller.abort();
   }, []);
 
   return (

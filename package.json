@@ -9,7 +9,7 @@
   ],
   "main": "src/index.tsx",
   "dependencies": {
-    "gcode-preview": "2.18",
+    "gcode-preview": "3.0.0-alpha.6",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-scripts": "5.0.1",
@@ -18,7 +18,7 @@
   "devDependencies": {
     "@types/react": "17.0.20",
     "@types/react-dom": "^18.0.6",
-    "@types/three": "^0.144.0",
+    "@types/three": "^0.169.0",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "eslint-config-prettier": "^8.5.0",

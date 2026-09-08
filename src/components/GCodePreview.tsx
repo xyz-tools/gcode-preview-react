@@ -1,13 +1,5 @@
-import * as GCodePreview from 'gcode-preview';
-import {
-  forwardRef,
-  Ref,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState
-} from 'react';
-import * as THREE from 'three';
+import { GCodePreview } from 'gcode-preview';
+import { forwardRef, Ref, useEffect, useImperativeHandle, useRef } from 'react';
 
 interface GCodePreviewProps {
   topLayerColor?: string;
@@ -19,55 +11,53 @@ interface GCodePreviewProps {
 
 interface GCodePreviewHandle {
   getLayerCount: () => number;
-  processGCode: (gcode: string | string[]) => void;
+  load: (gcode: string | string[] | ReadableStream) => Promise<void>;
 }
 
 function GCodePreviewUI(
   props: GCodePreviewProps,
   ref: Ref<GCodePreviewHandle>
 ): JSX.Element {
-  const {
-    topLayerColor = '',
-    lastSegmentColor = '',
-    startLayer,
-    endLayer,
-    lineWidth
-  } = props;
+  const { topLayerColor, lastSegmentColor, startLayer, endLayer, lineWidth } =
+    props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [preview, setPreview] = useState<GCodePreview.WebGLPreview>();
-
-  const resizePreview = () => {
-    preview?.resize();
-  };
+  const previewRef = useRef<GCodePreview | null>(null);
 
   useImperativeHandle(ref, () => ({
     getLayerCount() {
-      return preview?.layers.length as number;
+      return previewRef.current?.countLayers as number;
     },
-    processGCode(gcode) {
-      preview?.processGCode(gcode);
+    async load(gcode) {
+      const preview = previewRef.current;
+      if (!preview) return;
+      // state persists between loads, so start from a clean job.
+      // clear() also cancels a stream that is still being read.
+      preview.clear();
+      await preview.processGCodeStream(gcode);
     }
   }));
 
   useEffect(() => {
-    setPreview(
-      GCodePreview.init({
-        canvas: canvasRef.current as HTMLCanvasElement,
-        startLayer,
-        endLayer,
-        lineWidth,
-        topLayerColor: new THREE.Color(topLayerColor).getHex(),
-        lastSegmentColor: new THREE.Color(lastSegmentColor).getHex(),
-        buildVolume: { x: 250, y: 220, z: 150 },
-        initialCameraPosition: [0, 400, 450],
-        allowDragNDrop: false
-      })
-    );
+    const preview = new GCodePreview({
+      canvas: canvasRef.current as HTMLCanvasElement,
+      startLayer,
+      endLayer,
+      lineWidth,
+      topLayerColor,
+      lastSegmentColor,
+      buildVolume: { x: 250, y: 220, z: 150, smallGrid: false },
+      initialCameraPosition: [0, 400, 450],
+      droppable: false
+    });
+    previewRef.current = preview;
 
+    const resizePreview = () => preview.sceneManager.resize();
     window.addEventListener('resize', resizePreview);
 
     return () => {
       window.removeEventListener('resize', resizePreview);
+      previewRef.current = null;
+      preview.dispose();
     };
   }, []);
 
