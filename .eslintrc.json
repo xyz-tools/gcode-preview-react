@@ -28,7 +28,18 @@
   "settings": {
     "import/resolver": {
       "typescript": {}
+    },
+    "react": {
+      "version": "detect"
     }
   },
-  "root": true
+  "root": true,
+  "overrides": [
+    {
+      "files": ["**/*.test.jsx"],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }
