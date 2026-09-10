@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { GCodePreview } from 'gcode-preview';
 import Preview from './GCodePreview';
 
-jest.mock('gcode-preview', () => ({ GCodePreview: jest.fn() }));
+vi.mock('gcode-preview', () => ({ GCodePreview: vi.fn() }));
 
 let container;
 let root;
@@ -15,11 +15,11 @@ beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   globalThis.TextDecoderStream = class {};
   instances = [];
-  GCodePreview.mockImplementation(() => {
+  vi.mocked(GCodePreview).mockImplementation(function () {
     const instance = {
-      processGCodeStream: jest.fn().mockResolvedValue(undefined),
-      dispose: jest.fn(),
-      sceneManager: { resize: jest.fn(), render: jest.fn() }
+      processGCodeStream: vi.fn().mockResolvedValue(undefined),
+      dispose: vi.fn(),
+      sceneManager: { resize: vi.fn(), render: vi.fn() }
     };
     instances.push(instance);
     return instance;
@@ -34,15 +34,15 @@ afterEach(async () => {
   container.remove();
   globalThis.fetch = originalFetch;
   globalThis.TextDecoderStream = originalDecoder;
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 function response() {
-  return { ok: true, body: { pipeThrough: jest.fn(() => 'decoded stream') } };
+  return { ok: true, body: { pipeThrough: vi.fn(() => 'decoded stream') } };
 }
 
 test('streams decoded text, applies layers after loading, and cleans up', async () => {
-  globalThis.fetch = jest.fn().mockResolvedValue(response());
+  globalThis.fetch = vi.fn().mockResolvedValue(response());
   await act(async () => {
     root.render(<Preview src="/sample.gcode" startLayer={20} endLayer={150} />);
   });
@@ -62,7 +62,7 @@ test('streams decoded text, applies layers after loading, and cleans up', async 
 
 test('ignores a late response from a replaced source', async () => {
   let resolveOld;
-  globalThis.fetch = jest
+  globalThis.fetch = vi
     .fn()
     .mockImplementationOnce(
       () =>
@@ -80,7 +80,7 @@ test('ignores a late response from a replaced source', async () => {
 });
 
 test('reports failed loads', async () => {
-  globalThis.fetch = jest.fn().mockResolvedValue({ ok: false, status: 404 });
+  globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 404 });
   await act(async () => root.render(<Preview src="/missing.gcode" />));
   expect(container.querySelector('[role="alert"]').textContent).toContain(
     'HTTP 404'
@@ -88,7 +88,7 @@ test('reports failed loads', async () => {
 });
 
 test('survives Strict Mode effect replay without loading a disposed preview', async () => {
-  globalThis.fetch = jest.fn().mockResolvedValue(response());
+  globalThis.fetch = vi.fn().mockResolvedValue(response());
   await act(async () =>
     root.render(
       <StrictMode>

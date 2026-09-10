@@ -1,16 +1,16 @@
 # GCode Preview 3.0 with React & TypeScript
 
 This demo uses [GCode Preview](https://github.com/xyz-tools/gcode-preview)
-`3.0.0-alpha.6` with a React 19 / Create React App setup.
+`3.0.0-alpha.6` with a React 19 / TypeScript / Vite setup.
 
 ```sh
 npm install
 npm start
 ```
 
-Open http://localhost:3000. `npm run build` creates the production build in
-`build/`; `npm run lint` checks the source. Run the lifecycle regression tests
-with `CI=true npm test -- --watchAll=false --runInBand`.
+Open http://localhost:5173. `npm run build` typechecks and creates the
+production build in `build/`, which `npm run preview` serves. `npm run lint`
+checks the source and `npm test` runs the lifecycle regression tests (Vitest).
 
 ## Component
 
@@ -18,7 +18,7 @@ with `CI=true npm test -- --watchAll=false --runInBand`.
 import GCodePreview from './components/GCodePreview';
 
 <GCodePreview
-  src={`${process.env.PUBLIC_URL}/square-tower.gcode`}
+  src={`${import.meta.env.BASE_URL}square-tower.gcode`}
   topLayerColor="lime"
   lastSegmentColor="red"
   startLayer={20}
