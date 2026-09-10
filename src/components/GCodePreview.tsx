@@ -1,5 +1,5 @@
 import { GCodePreview } from 'gcode-preview';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type JSX } from 'react';
 
 interface GCodePreviewProps {
   src: string;

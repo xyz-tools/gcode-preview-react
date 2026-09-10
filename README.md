@@ -1,7 +1,7 @@
 # GCode Preview 3.0 with React & TypeScript
 
 This demo uses [GCode Preview](https://github.com/xyz-tools/gcode-preview)
-`3.0.0-alpha.6` with the existing React 18 / Create React App setup.
+`3.0.0-alpha.6` with a React 19 / Create React App setup.
 
 ```sh
 npm install

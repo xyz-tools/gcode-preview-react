@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 import GCodePreview from './components/GCodePreview';
 import './styles.css';
 
