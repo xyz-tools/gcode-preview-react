@@ -7,13 +7,22 @@ body {
   margin-top: 60px;
 }
 
-.gcode-preview {
-  width: 50vw;
-  margin: 0 auto 30px;
+.samples {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
 }
 
-canvas {
+button[aria-pressed='true'] {
+  font-weight: bold;
+}
+
+/* The component renders a bare canvas; its size comes from here. */
+.gcode-preview {
+  display: block;
   outline: none;
-  width: 100%;
+  width: 50vw;
   height: 320px;
+  margin: 0 auto;
 }
