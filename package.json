@@ -67,16 +67,16 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "gcode-preview": "3.0.0-alpha.6",
-    "globals": "^17.12.0",
-    "jsdom": "^29.1.1",
-    "prettier": "^3.9.6",
+    "globals": "^17.13.0",
+    "jsdom": "^30.1.2",
+    "prettier": "^3.9.9",
     "publint": "^0.3.25",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.70.0",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.0"
+    "typescript": "~6.0",
+    "typescript-eslint": "^8.71.0",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
   },
   "engines": {
     "node": ">=22.12.0"
