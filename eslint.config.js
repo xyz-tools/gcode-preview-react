@@ -6,7 +6,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['build', 'coverage'] },
+  { ignores: ['build', 'dist', 'coverage'] },
   js.configs.recommended,
   tseslint.configs.recommended,
   react.configs.flat.recommended,
