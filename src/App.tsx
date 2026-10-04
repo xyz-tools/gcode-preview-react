@@ -36,7 +36,11 @@ function App(): JSX.Element {
 
   return (
     <div className="app">
-      <h1>GCode Preview 3.0 React & TypeScript Demo</h1>
+      <h1>GCode Preview React demo</h1>
+      <p>
+        Drop a <code>.gcode</code> file onto the canvas to preview your own
+        print.
+      </p>
       <div className="samples">
         {samples.map(s => (
           <button
@@ -54,6 +58,7 @@ function App(): JSX.Element {
         src={`${import.meta.env.BASE_URL}${sample.file}`}
         buildVolume={{ x: 250, y: 220, z: 150, smallGrid: true }}
         initialCameraPosition={[0, 400, 450]}
+        droppable
         lineWidth={1}
         topLayerColor={sample.topLayerColor}
         lastSegmentColor={sample.lastSegmentColor}
